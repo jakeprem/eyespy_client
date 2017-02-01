@@ -7,6 +7,8 @@ import Debug exposing (log)
 
 import Json.Decode as Decode exposing (decodeString, field, map3)
 
+import Exts.List exposing (mergeBy)
+
 main =
     Html.program
     { init = init
@@ -46,10 +48,13 @@ update msg model =
         NewMessage str ->
             let
                 updatedColonists =
-                    stringToColonists str
+                    mergeColonists str model.colonists
             in
                 ( { model | colonists = updatedColonists }, Cmd.none)
 
+mergeColonists : String -> List Colonist -> List Colonist
+mergeColonists rawJson colonists =
+    Exts.List.mergeBy (\n -> n.id) colonists (stringToColonists rawJson) 
 
 stringToColonists : String -> List Colonist
 stringToColonists rawJson =
@@ -61,13 +66,7 @@ stringToColonists rawJson =
         Ok colonists ->
             colonists
 
-
 --DECODERS
-
--- This is ugly and should be broken apart
---collectionDecoder =
-    --field "colonists" (list (map3 Colonist (field "id" Decode.string) (field "name" Decode.string) (field "currentJob" Decode.string) ) )
-
 collectionDecoder : Decode.Decoder (List Colonist)
 collectionDecoder =
     (field "colonists" (Decode.list colonistDecoder))
