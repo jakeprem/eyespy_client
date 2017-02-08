@@ -52,7 +52,7 @@ update msg model =
 
 mergeColonists : String -> List Colonist -> List Colonist
 mergeColonists rawJson colonists =
-    Exts.List.mergeBy (\n -> n.id) colonists (stringToColonists rawJson) 
+    Exts.List.mergeBy .id colonists (stringToColonists rawJson) 
 
 stringToColonists : String -> List Colonist
 stringToColonists rawJson =

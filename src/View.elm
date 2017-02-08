@@ -5,19 +5,35 @@ import Html.Events exposing(..)
 
 import Html exposing (..)
 import Messages exposing (Msg(..))
-import Models exposing (Model)
+import Models exposing (Model, Colonist)
 
 
 -- VIEW
+
 view : Model -> Html Msg
 view model =
   div []
-    [ div [] (List.map viewMessage model.messages)
-    , input [onInput Input] []
-    , button [onClick Send] [text "Send"]
+    [ div [] [(viewColonists model.colonists)]
     ]
 
 
-viewMessage : String -> Html msg
-viewMessage msg =
-  div [] [ text msg ]
+viewColonists : List Colonist -> Html Msg
+viewColonists colonists =
+    div [ class "p2" ]
+        [ table []
+            [ thead []
+                [ tr []
+                    [ th [] [ text "Name"]
+                    , th [] [ text "Job" ]
+                    ]
+                ]
+            , tbody [] (List.map colonistRow colonists)
+            ]
+        ]
+
+colonistRow : Colonist -> Html Msg
+colonistRow colonist =
+    tr []
+        [ td [] [ text colonist.name ]
+        , td [] [ text colonist.currentJob ]
+        ]
